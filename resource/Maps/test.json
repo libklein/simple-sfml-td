@@ -1,0 +1,18 @@
+{
+  "name": "TestMap",
+  "tileset": "kenny",
+  "dimension": [10, 10],
+  "default-tile": 9,
+  "tiles": [
+    {
+      "x": 5,
+      "y": 5,
+      "tile_id": 5
+    },
+    {
+      "x": 5,
+      "y": 6,
+      "tile_id": 5
+    }
+  ]
+}
