@@ -6,6 +6,7 @@
 #include <nlohmann/json.hpp>
 #include <fstream>
 #include <objects/Tile.hpp>
+#include <objects/Entity.hpp>
 
 auto SpriteAtlas::LoadFromFile(const std::filesystem::path &path) -> SpriteAtlas {
     auto textures = TextureAtlas::LoadFromFile(path / "tdtiles_64.png");
@@ -17,11 +18,15 @@ auto SpriteAtlas::LoadFromFile(const std::filesystem::path &path) -> SpriteAtlas
     }
 
     SpriteAtlas sprite_atlas(std::move(textures));
-    // Read terrain files
+    // Read terrain sprites
     for(const auto &terrain : atlas["terrains"]) {
         for(const auto &tile : terrain) {
             sprite_atlas.add<Tile>(SpriteAtlas::TerrainSprite, Tile::FromJSON(tile, sprite_atlas.Textures()));
         }
+    }
+    // Read entities
+    for(const auto &static_sprite : atlas["entities"]["static"]) {
+        sprite_atlas.add<Entity>(SpriteAtlas::StaticSprite, Entity::FromJSON(static_sprite, sprite_atlas.Textures()));
     }
 
     return sprite_atlas;

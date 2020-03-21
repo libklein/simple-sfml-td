@@ -63,5 +63,16 @@
         "walkable": true
       }
     ]
+  },
+  "entities": {
+    "static": [
+      {
+        "uuid": 10,
+        "sprite_id": 15
+      }
+    ],
+    "towers": [
+
+    ]
   }
 }

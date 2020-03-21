@@ -50,6 +50,13 @@ int main() {
                         auto &clicked_tile = map.getTile(evt.mouseButton.x, evt.mouseButton.y);
                         std::cout << clicked_tile.SpriteID() << std::endl;
                         //clicked_tile.build(Tile(texture_atlas, 15));
+                        if(clicked_tile.canBuild()) {
+                            map.addEntity(std::move(
+                                    dynamic_cast<Entity &>(*sprite_atlas.CreateSprite(SpriteAtlas::StaticSprite, 0))),
+                                          evt.mouseButton.x, evt.mouseButton.y);
+                        } else if (clicked_tile.hasEntity()) {
+                            map.removeEntity(evt.mouseButton.x, evt.mouseButton.y);
+                        }
                     }
                 }
             }

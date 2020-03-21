@@ -17,3 +17,29 @@ Tile::Tile(const Sprite &sprite, bool buildable, bool walkable)
 auto Tile::FromJSON(const nlohmann::json &data, const TextureAtlas &textures) -> Tile {
     return Tile(Sprite::FromJSON(data, textures), data["buildable"], data["walkable"]);
 }
+
+void Tile::setEntity(Entity *entity) {
+    entity_ = entity;
+}
+
+auto Tile::canBuild() const -> bool {
+    return buildable_ && !entity_;
+}
+
+auto Tile::hasEntity() const -> bool {
+    return entity_;
+}
+
+auto Tile::getEntity() -> Entity * {
+    return entity_;
+}
+
+auto Tile::getEntity() const -> const Entity * {
+    return entity_;
+}
+
+auto Tile::releaseEntity() -> Entity * {
+    Entity *entity = nullptr;
+    std::swap(entity, entity_);
+    return entity;
+}

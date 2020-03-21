@@ -11,7 +11,7 @@
 class SpriteAtlas {
 public:
     enum SpriteType {
-        TerrainSprite = 0, EntitySprite = 1, EffectSprite = 2, COUNT = 3
+        TerrainSprite = 0, EntitySprite = 1, EffectSprite = 2, StaticSprite = 3, COUNT = 4
     };
     using SpriteID = size_t;
 private:
