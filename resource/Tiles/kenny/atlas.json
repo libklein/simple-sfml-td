@@ -6,25 +6,25 @@
         "uuid": 0,
         "sprite_id": 10,
         "buildable": true,
-        "walkable": true
+        "walkable": false
       },
       {
         "uuid": 1,
         "sprite_id": 11,
         "buildable": true,
-        "walkable": true
+        "walkable": false
       },
       {
         "uuid": 2,
         "sprite_id": 12,
         "buildable": true,
-        "walkable": true
+        "walkable": false
       },
       {
         "uuid": 3,
         "sprite_id": 33,
         "buildable": true,
-        "walkable": true
+        "walkable": false
       },
       {
         "uuid": 4,
@@ -36,30 +36,36 @@
         "uuid": 5,
         "sprite_id": 35,
         "buildable": true,
-        "walkable": true
+        "walkable": false
       },
       {
         "uuid": 6,
         "sprite_id": 56,
         "buildable": true,
-        "walkable": true
+        "walkable": false
       },
       {
         "uuid": 7,
         "sprite_id": 57,
         "buildable": true,
-        "walkable": true
+        "walkable": false
       },
       {
         "uuid": 8,
         "sprite_id": 58,
         "buildable": true,
-        "walkable": true
+        "walkable": false
       },
       {
         "uuid": 9,
         "sprite_id": 60,
         "buildable": true,
+        "walkable": false
+      },
+      {
+        "uuid": 10,
+        "sprite_id": 84,
+        "buildable": false,
         "walkable": true
       }
     ]
