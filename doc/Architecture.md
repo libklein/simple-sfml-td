@@ -7,7 +7,11 @@
 * Texture Atlas
   * Representation of sprite sheet, gets proper texture coordinates for sprite ids
 
-
+* Animation member / Subclass Animation
+  * List of:
+    * Target transform
+    * Duration
+    * Frames (Sprite ids)
 
 ## World
 
