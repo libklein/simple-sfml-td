@@ -3,7 +3,7 @@ project(rougelike_dev)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(rougelike_dev src/main.cpp src/TextureAtlas.cpp src/TextureAtlas.hpp src/world/Map.cpp src/world/Map.hpp src/SpriteAtlas.cpp src/SpriteAtlas.hpp src/world/World.cpp src/world/World.hpp src/objects/Sprite.cpp src/objects/Sprite.hpp src/objects/Tile.cpp src/objects/Tile.hpp)
+add_executable(rougelike_dev src/main.cpp src/TextureAtlas.cpp src/TextureAtlas.hpp src/world/Map.cpp src/world/Map.hpp src/SpriteAtlas.cpp src/SpriteAtlas.hpp src/world/World.cpp src/world/World.hpp src/objects/Sprite.cpp src/objects/Sprite.hpp src/objects/Tile.cpp src/objects/Tile.hpp src/objects/Entity.cpp src/objects/Entity.hpp src/util/pool.hpp)
 
 target_include_directories(rougelike_dev PRIVATE src/)
 target_include_directories(rougelike_dev PRIVATE lib/)
