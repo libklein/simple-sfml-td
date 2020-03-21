@@ -28,7 +28,7 @@ Map::Map(std::size_t x, std::size_t y, const Tile &default_tile)
     assert(default_tile.getLocalBounds().width == default_tile.getLocalBounds().height);
     for(size_t i = 0; i < x; ++i) {
         for(size_t j = 0; j < y; ++j) {
-            tiles_[get_offset({i,j})].setPosition(i*tile_size_, j*tile_size_);
+            tiles_[get_offset({i,j})].setPosition(static_cast<float>(i*tile_size_), static_cast<float>(j*tile_size_));
         }
     }
 }
@@ -70,6 +70,17 @@ auto Map::LoadFromFile(const std::filesystem::path &path) -> std::pair<Map, Spri
         map.set_tile(map.get_offset({tile["x"], tile["y"]}), create_tile(tile["tile_id"]));
     }
 
+    auto add_tiles = [&map] (auto &container, const auto &tiles) {
+        for(const auto &tile_data : tiles) {
+            size_t x = tile_data["x"], y = tile_data["y"];
+            container.push_back(&map._get_tile(x, y));
+        }
+    };
+    // Initialize spawn points
+    add_tiles(map.spawns_, map_data["spawns"]);
+    // Initialize destinations
+    add_tiles(map.targets_, map_data["targets"]);
+
     return {std::move(map), std::move(sprites)};
 }
 
@@ -102,7 +113,6 @@ auto Map::addEntity(Entity &&entity, float x, float y) -> Entity & {
     auto top_left_offset = get_offset(translate_to_grid(x, y));
     Tile &tile = tiles_[top_left_offset];
     assert(tile.canBuild());
-    // TODO Remove entity
 
     Entity &local_entity = static_entities_.insert(std::move(entity));
 
@@ -123,4 +133,15 @@ void Map::removeEntity(float x, float y) {
     static_entities_.remove(tile.releaseEntity());
 }
 
+auto Map::_get_tile(size_t x, size_t y) -> Tile & {
+    return tiles_[get_offset({x, y})];
+}
+
+auto Map::getSpawnPoints() const -> const std::vector<const Tile *>& {
+    return spawns_;
+}
+
+auto Map::getTargets() const -> const std::vector<const Tile *>& {
+    return targets_;
+}
 

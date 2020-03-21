@@ -19,6 +19,9 @@ class Map : public sf::Drawable {
     std::size_t x_size_, y_size_, tile_size_;
 
     util::iterable_pool<Entity> static_entities_;
+
+    std::vector<const Tile*> spawns_;
+    std::vector<const Tile*> targets_;
 public:
     Map(std::size_t x, std::size_t y, const Tile &default_tile);
     Map(const Map &other) = delete;
@@ -36,6 +39,8 @@ public:
     [[nodiscard]] auto Height() const -> std::size_t;
 
     [[nodiscard]] auto getTile(float x, float y) const -> const Tile&;
+    [[nodiscard]] auto getSpawnPoints() const -> const std::vector<const Tile*>&;
+    [[nodiscard]] auto getTargets() const -> const std::vector<const Tile*>&;
 
     /**
      * Add an entity to all tiles covered by it
@@ -57,6 +62,7 @@ protected:
     void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 
 private:
+    [[nodiscard]] auto _get_tile(size_t x, size_t y) -> Tile&;
     auto set_tile(std::size_t offset, Tile&& tile) -> Tile&;
     [[nodiscard]] auto get_offset(std::pair<std::size_t, std::size_t> grid_coords) const -> std::size_t;
     [[nodiscard]] auto translate_to_grid(float x, float y) const -> std::pair<std::size_t, std::size_t>;

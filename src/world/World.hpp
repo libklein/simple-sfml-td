@@ -12,6 +12,9 @@
  */
 class World {
     Map map_;
+
+public:
+    explicit World(Map &&map) : map_(std::move(map)) {}
 };
 
 
