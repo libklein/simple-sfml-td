@@ -1,3 +1,0 @@
-/home/patrick/Code/rougelike-dev/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/patrick/Code/rougelike-dev/cmake-build-debug/CMakeFiles/rougelike_dev.dir
-/home/patrick/Code/rougelike-dev/cmake-build-debug/CMakeFiles/edit_cache.dir
