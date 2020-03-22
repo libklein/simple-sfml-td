@@ -47,7 +47,7 @@ protected:
 private:
     std::size_t id_;
 public:
-    Sprite(const sf::Texture &texture, const sf::IntRect &rectangle, size_t id);
+    Sprite(const sf::Texture &texture, const sf::FloatRect &rectangle, size_t id);
 
     [[nodiscard]] virtual auto constructFromPrototype() const -> std::unique_ptr<Sprite>;
 
@@ -60,7 +60,8 @@ public:
     // Setters
     void setPosition(float x, float y);
     void setPosition(const sf::Vector2f &position);
-    void setTextureRect(const sf::IntRect &rect);
+    void setTextureRect(const sf::FloatRect &rect);
+    void setTexture(const sf::Texture *texture);
 
     // Getters
     [[nodiscard]] auto getLocalBounds() const -> sf::FloatRect;

@@ -35,11 +35,7 @@ auto TextureAtlas::Texture() const -> const sf::Texture& {
     return *sprite_sheet_;
 }
 
-auto TextureAtlas::createSprite(std::size_t id) const -> sf::Sprite {
-    return sf::Sprite(this->Texture(), this->getCoord<int>(id));
-}
-
-auto TextureAtlas::NumberOfSprites() const -> std::size_t {
+auto TextureAtlas::NumberOfSprites() const -> TextureID {
     return sprites_per_row_ * sprites_per_col_;
 }
 

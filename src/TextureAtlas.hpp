@@ -15,8 +15,13 @@
  *
  */
 class TextureAtlas {
+public:
+    using TextureID = std::size_t;
+    static constexpr TextureID NO_TEXTURE = std::numeric_limits<TextureID>::max();
+protected:
     std::unique_ptr<sf::Texture> sprite_sheet_;
-    std::size_t sprite_size_, sprites_per_row_, sprites_per_col_;
+    size_t sprite_size_;
+    TextureID sprites_per_row_, sprites_per_col_;
 
 public:
     explicit TextureAtlas(const std::filesystem::path &path, std::size_t sprite_size);
@@ -25,7 +30,7 @@ public:
     static auto LoadFromFile(const std::filesystem::path &path) -> TextureAtlas;
 
     [[nodiscard]]
-    auto NumberOfSprites() const -> std::size_t;
+    auto NumberOfSprites() const -> TextureID ;
 
     [[nodiscard]]
     auto SpriteSize() const -> std::size_t;
@@ -35,7 +40,7 @@ public:
 
     template<typename T = float>
     [[nodiscard]]
-    auto getCoord(std::size_t id) const -> sf::Rect<T> {
+    auto getTextureRect(TextureID id) const -> sf::Rect<T> {
         assert(id < NumberOfSprites());
         size_t logical_y_offset = id / sprites_per_row_;
         size_t logical_x_offset = id - logical_y_offset * sprites_per_row_;
@@ -43,9 +48,6 @@ public:
                            static_cast<T>(logical_y_offset*this->sprite_size_),
                              this->sprite_size_, this->sprite_size_);
     }
-
-    [[nodiscard]]
-    auto createSprite(std::size_t id) const -> sf::Sprite;
 };
 
 

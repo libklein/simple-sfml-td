@@ -10,10 +10,10 @@ auto Sprite::constructFromPrototype() const -> std::unique_ptr<Sprite> {
 }
 
 auto Sprite::FromJSON(const nlohmann::json &json, const TextureAtlas &textures) -> Sprite {
-    return Sprite(textures.Texture(), textures.getCoord<int>(json["sprite_id"]), json["uuid"]);
+    return Sprite(textures.Texture(), textures.getTextureRect<float>(json["sprite_id"]), json["uuid"]);
 }
 
-Sprite::Sprite(const sf::Texture &texture, const sf::IntRect &rectangle, size_t id)
+Sprite::Sprite(const sf::Texture &texture, const sf::FloatRect &rectangle, size_t id)
     : texture_(&texture)
     , id_(id) {
     setTextureRect(rectangle);
@@ -39,11 +39,15 @@ void Sprite::setPosition(const sf::Vector2f &position) {
     location_.setPosition(position);
 }
 
+void Sprite::setTexture(const sf::Texture *texture) {
+    texture_ = texture;
+}
+
 auto Sprite::getPosition() const -> const sf::Vector2f & {
     return location_.getPosition();
 }
 
-void Sprite::setTextureRect(const sf::IntRect &rect) {
+void Sprite::setTextureRect(const sf::FloatRect &rect) {
     auto left = static_cast<float>(rect.left), width = static_cast<float>(rect.width);
     auto top = static_cast<float>(rect.top), height = static_cast<float>(rect.height);
 
