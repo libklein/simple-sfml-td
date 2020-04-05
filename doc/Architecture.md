@@ -9,9 +9,28 @@
 
 * Animation member / Subclass Animation
   * List of:
-    * Target transform
     * Duration
     * Frames (Sprite ids)
+
+## Entities
+
+* Entity (Animation)
+* Actor interface (Controllable?)
+* Movable interface
+
+
+
+**What will definietly be in the game:**
+
+* Towers
+  * Static, but can rotate
+* Enemies
+  * Spawn in waves
+  * Run to target
+* Statics
+  * Bushes, etc., belongs to map
+  * May be destructable
+* All need to be aware of the world
 
 ## World
 
