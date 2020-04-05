@@ -2,13 +2,14 @@
 // Created by patrick on 3/15/20.
 //
 
-#ifndef ROUGELIKE_DEV_SPRITEATLAS_HPP
-#define ROUGELIKE_DEV_SPRITEATLAS_HPP
+#ifndef ROUGELIKE_DEV_SPRITEFACTORY_HPP
+#define ROUGELIKE_DEV_SPRITEFACTORY_HPP
 
 #include <TextureAtlas.hpp>
 #include <objects/Sprite.hpp>
+#include <memory>
 
-class SpriteAtlas {
+class SpriteFactory {
 public:
     enum SpriteType {
         TerrainSprite = 0, EntitySprite = 1, EffectSprite = 2, StaticSprite = 3, COUNT = 4
@@ -21,16 +22,30 @@ private:
 
     std::vector<Sprite*> id_to_tile_;
 public:
-    explicit SpriteAtlas(TextureAtlas &&);
+    explicit SpriteFactory(TextureAtlas &&);
 
-    static auto LoadFromFile(const std::filesystem::path &) -> SpriteAtlas;
+    static auto LoadFromFile(const std::filesystem::path &) -> SpriteFactory;
 
     [[nodiscard]] auto TileSize() const -> std::size_t;
     [[nodiscard]] auto Textures() const -> const TextureAtlas&;
     [[nodiscard]] auto NumberOfSpritesOfKind(SpriteType) const -> std::size_t;
 
-    [[nodiscard]] auto CreateSprite(SpriteID tile_id) const -> std::unique_ptr<Sprite>;
-    [[nodiscard]] auto CreateSprite(SpriteType sprite_type, size_t tile_id) const -> std::unique_ptr<Sprite>;
+    template<class Object>
+    [[nodiscard]] auto CreateEntity(SpriteID sprite_id) const -> std::unique_ptr<Object> {
+        std::unique_ptr<Sprite> ptr = getSprite(sprite_id).constructFromPrototype();
+        auto &obj = dynamic_cast<Object&>(*ptr); // Will throw on failure to cast
+        ptr.release();
+        return std::unique_ptr<Object>(&obj);
+    }
+
+    /*
+    template<class Object>
+    [[nodiscard]] auto CreateEntity(SpriteType sprite_type, size_t sprite_id) const -> std::unique_ptr<Object> {
+        std::unique_ptr<Sprite> ptr = sprite_prototypes_[sprite_type][sprite_id]->constructFromPrototype();
+        auto &obj = dynamic_cast<Object&>(*ptr); // Will throw on failure to cast
+        ptr.release();
+        return std::unique_ptr<Object>(&obj);
+    }*/
 
     template<class T>
     auto add(SpriteType sprite_type, T&& tile) -> T& {
@@ -44,4 +59,4 @@ public:
 };
 
 
-#endif //ROUGELIKE_DEV_SPRITEATLAS_HPP
+#endif //ROUGELIKE_DEV_SPRITEFACTORY_HPP

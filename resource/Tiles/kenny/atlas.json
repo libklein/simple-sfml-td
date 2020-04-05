@@ -73,12 +73,22 @@
   "entities": {
     "static": [
       {
-        "uuid": 10,
+        "uuid": 11,
         "sprite_id": 15
       }
     ],
-    "towers": [
+    "tower": [
 
+    ],
+    "mob": [
+      {
+        "name": "soldier",
+        "uuid": 12,
+        "sprite_id": 245,
+        "health": 100,
+        "speed": 50,
+        "turn_speed": 360
+      }
     ]
   }
 }

@@ -9,7 +9,7 @@
 #include <SFML/Graphics/VertexBuffer.hpp>
 #include <objects/Tile.hpp>
 #include <objects/Entity.hpp>
-#include <SpriteAtlas.hpp>
+#include <SpriteFactory.hpp>
 #include <filesystem>
 #include <vector>
 #include <util/pool.hpp>
@@ -29,9 +29,9 @@ public:
     Map(Map &&other) noexcept = default;
     Map& operator=(Map &&other) noexcept = default;
 
-    static auto LoadFromFile(const std::filesystem::path &path) -> std::pair<Map, SpriteAtlas>;
-    static auto LoadFromMemory(const std::vector<std::pair<std::pair<size_t, size_t>, SpriteAtlas::SpriteID>> &,
-            const SpriteAtlas&,
+    static auto LoadFromFile(const std::filesystem::path &path) -> std::pair<Map, SpriteFactory>;
+    static auto LoadFromMemory(const std::vector<std::pair<std::pair<size_t, size_t>, SpriteFactory::SpriteID>> &,
+            const SpriteFactory&,
             const Tile &default_tile,
             size_t size_x, size_t size_y) -> Map;
 
@@ -58,6 +58,8 @@ public:
      * @param y
      */
     void removeEntity(float x, float y);
+
+    void update(sf::Time delta);
 protected:
     void draw(sf::RenderTarget &target, sf::RenderStates states) const override;
 

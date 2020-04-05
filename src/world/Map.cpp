@@ -14,8 +14,6 @@ void Map::draw(sf::RenderTarget &target, sf::RenderStates states) const {
     for(const auto & tile : tiles_) {
         target.draw(tile, states);
     }
-    auto beg = static_entities_.begin();
-    auto end = static_entities_.end();
     for(const auto & entity : static_entities_) {
         target.draw(entity, states);
     }
@@ -34,32 +32,32 @@ Map::Map(std::size_t x, std::size_t y, const Tile &default_tile)
 }
 
 auto Map::get_offset(std::pair<std::size_t, std::size_t> grid_coords) const -> std::size_t {
-    assert(grid_coords.first <= x_size_ && grid_coords.second <= y_size_);
+    assert(grid_coords.first < x_size_ && grid_coords.second < y_size_);
     return grid_coords.second * x_size_ + grid_coords.first;
 }
 
-auto Map::LoadFromMemory(const std::vector<std::pair<std::pair<size_t, size_t>, SpriteAtlas::SpriteID>> &data, const SpriteAtlas &sprites,
+auto Map::LoadFromMemory(const std::vector<std::pair<std::pair<size_t, size_t>, SpriteFactory::SpriteID>> &data, const SpriteFactory &sprites,
                          const Tile &default_tile, size_t size_x, size_t size_y) -> Map {
     Map map(size_x, size_y, default_tile);
 
     for(const auto [coords, id]: data) {
-        auto tile = std::move(dynamic_cast<Tile&>(*sprites.CreateSprite(SpriteAtlas::TerrainSprite, id)));
+        auto tile = std::move(*sprites.CreateEntity<Tile>(id));
         map.set_tile(map.get_offset(coords), std::move(tile));
     }
 
     return std::move(map);
 }
 
-auto Map::LoadFromFile(const std::filesystem::path &path) -> std::pair<Map, SpriteAtlas> {
+auto Map::LoadFromFile(const std::filesystem::path &path) -> std::pair<Map, SpriteFactory> {
     nlohmann::json map_data;
     {
         std::ifstream map_stream(path);
         map_stream >> map_data;
     }
     // Load sprite atlas
-    auto sprites = SpriteAtlas::LoadFromFile(std::filesystem::path("resource/Tiles") / map_data["tileset"]);
-    auto create_tile = [&sprites] (SpriteAtlas::SpriteID id) -> Tile&& {
-        return std::move(dynamic_cast<Tile&>(*sprites.CreateSprite(SpriteAtlas::TerrainSprite, id)));
+    auto sprites = SpriteFactory::LoadFromFile(std::filesystem::path("resource/Tiles") / map_data["tileset"]);
+    auto create_tile = [&sprites] (SpriteFactory::SpriteID id) -> Tile&& {
+        return std::move(*sprites.CreateEntity<Tile>(id));
     };
 
     // Initialize with default tile
@@ -103,6 +101,7 @@ auto Map::getTile(float x, float y) const -> const Tile & {
 }
 
 auto Map::set_tile(std::size_t offset, Tile &&tile) -> Tile & {
+    assert(offset < tiles_.size());
     auto pos = tiles_[offset].getPosition();
     tiles_[offset] = std::move(tile);
     tiles_[offset].setPosition(pos);
@@ -143,5 +142,11 @@ auto Map::getSpawnPoints() const -> const std::vector<const Tile *>& {
 
 auto Map::getTargets() const -> const std::vector<const Tile *>& {
     return targets_;
+}
+
+void Map::update(sf::Time delta) {
+    for(auto& tile : tiles_) {
+        tile.update(delta);
+    }
 }
 
