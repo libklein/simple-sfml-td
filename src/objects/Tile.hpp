@@ -5,18 +5,18 @@
 #ifndef ROUGELIKE_DEV_TILE_HPP
 #define ROUGELIKE_DEV_TILE_HPP
 
-#include "objects/Sprite.hpp"
+#include <objects/Sprite.hpp>
 #include <objects/Entity.hpp>
 
-class Tile : public Sprite {
+class Tile : public Entity {
 protected:
     bool buildable_, walkable_;
 
     // Entity residing on tile
-    Entity *entity_;
+    Entity *entity_ = nullptr;
 public:
-    Tile(Sprite&&, bool buildable, bool walkable);
-    Tile(const Sprite&, bool buildable, bool walkable);
+    Tile(Entity&&, bool buildable, bool walkable);
+    Tile(const Entity&, bool buildable, bool walkable);
 
     void setEntity(Entity *entity);
     auto getEntity() -> Entity*;
@@ -25,7 +25,16 @@ public:
 
     static auto FromJSON(const nlohmann::json &data, const TextureAtlas &textures) -> Tile;
 
+    /**
+     *
+     * @return True if the tile is buildable and hasEntity() returns false.
+     */
     auto canBuild() const -> bool;
+    /**
+     *
+     * @return True if the tile may house buildings.
+     */
+    auto isBuildable() const -> bool;
 
     auto hasEntity() const -> bool;
 

@@ -4,30 +4,28 @@
 #include <world/World.hpp>
 #include <filesystem>
 #include <random>
-
-/*auto randomMap(const SpriteAtlas &sprites, std::size_t x_dim, std::size_t y_dim) -> std::vector<std::vector<std::size_t>> {
-    std::vector<std::vector<std::size_t>> map_data(y_dim, std::vector<size_t>(x_dim));
-    auto prng = std::mt19937(rand());
-    auto random = std::uniform_int_distribution<>(0, sprites.NumberOfSpritesOfKind(SpriteAtlas::TerrainSprite) - 1);
-    for(auto &next_row : map_data) {
-        for(auto& next_tile_id : next_row) {
-            next_tile_id = random(prng);
-        }
-    }
-    return map_data;
-}*/
+#include <objects/Unit.hpp>
+#include <objects/Mob.hpp>
+#include <objects/actions/MovementAction.hpp>
+#include <game/Game.hpp>
 
 int main() {
     std::size_t width = 800, height = 600;
     sf::RenderWindow window(sf::VideoMode(width, height), "rougelike_dev");
     window.setVerticalSyncEnabled(true);
 
-    //auto texture_atlas = std::make_shared<TextureAtlas>(TextureAtlas::LoadFromFile("./resource/Tiles/kenny/tdtiles_64.png"));
-    //auto sprite_atlas = SpriteAtlas::LoadFromFile("./resource/Tiles/kenny/");
 
-    //auto map = Map::LoadFromMemory(randomMap(sprite_atlas, width / sprite_atlas.Textures().SpriteSize(), height / sprite_atlas.Textures().SpriteSize()), sprite_atlas);
-    auto [map, sprite_atlas] = Map::LoadFromFile("./resource/Maps/test.json");
+    auto [map, sprite_factory] = Map::LoadFromFile("./resource/Maps/test.json");
+    auto world = World(std::move(map), sprite_factory);
 
+    std::vector<WavePrototype> waves = {{{12, 12},
+                                         sf::seconds(2),
+                                         sf::seconds(60),
+                                         sf::seconds(2),
+                                         2}};
+    Game game(sprite_factory, std::move(world), std::move(waves), 50);
+
+    sf::Clock clock;
     while(window.isOpen()) {
         sf::Event evt;
         while(window.pollEvent(evt)) {
@@ -41,29 +39,41 @@ int main() {
                     break;
                 }
                 case sf::Event::KeyReleased: {
-                    if(evt.key.code == sf::Keyboard::Enter) {
-                        //map = Map::LoadFromMemory(randomMap(sprite_atlas, map.Width(), map.Height()), sprite_atlas);
-                    }
+                    /*if(evt.key.code == sf::Keyboard::Enter) {
+                        auto enemy = sprite_factory.CreateEntity<Mob>(12);
+                        auto coord = world.getMap().getSpawnPoints().front()->getPosition();
+                        auto &unit = dynamic_cast<Mob&>(world.spawn(std::move(enemy), coord.x, coord.y));
+
+                        auto target_coord = world.getMap().getTargets().front()->getPosition();
+                        auto action = std::make_shared<MovementAction>(target_coord);
+
+                        unit.setAction(action);
+                    }*/
                 }
                 case sf::Event::MouseButtonReleased: {
-                    if(evt.mouseButton.button == sf::Mouse::Left) {
-                        auto &clicked_tile = map.getTile(evt.mouseButton.x, evt.mouseButton.y);
+                    /*if(evt.mouseButton.button == sf::Mouse::Left) {
+                        auto &clicked_tile = world.getMap().getTile(evt.mouseButton.x, evt.mouseButton.y);
                         std::cout << clicked_tile.SpriteID() << std::endl;
-                        //clicked_tile.build(Tile(texture_atlas, 15));
-                        if(clicked_tile.canBuild()) {
-                            map.addEntity(std::move(
-                                    dynamic_cast<Entity &>(*sprite_atlas.CreateSprite(SpriteAtlas::StaticSprite, 0))),
-                                          evt.mouseButton.x, evt.mouseButton.y);
-                        } else if (clicked_tile.hasEntity()) {
-                            map.removeEntity(evt.mouseButton.x, evt.mouseButton.y);
+                        if(clicked_tile.isBuildable()) {
+                            if (clicked_tile.canBuild()) {
+                                world.getMap().addEntity(std::move(*sprite_factory.CreateEntity<Entity>(11)),
+                                              evt.mouseButton.x, evt.mouseButton.y);
+                            } else if (clicked_tile.hasEntity()) {
+                                world.getMap().removeEntity(evt.mouseButton.x, evt.mouseButton.y);
+                            }
                         }
-                    }
+                    }*/
                 }
             }
         }
 
+        // Update the world
+        game.update(clock.getElapsedTime());
+        clock.restart();
+
+        // Draw it
         window.clear();
-        window.draw(map);
+        window.draw(game.getWorld());
         window.display();
     }
 

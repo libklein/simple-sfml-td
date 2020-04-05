@@ -8,23 +8,28 @@
 #include <SFML/System/Time.hpp>
 #include <objects/Sprite.hpp>
 #include <objects/Animation.hpp>
+#include <fwd.hpp>
 
 /**
  * Animatable Sprite
  */
 class Entity : public Sprite {
-    std::optional<Animation::Animation> animation_;
+    World *world_; /// An entity lives in a world
+
+    std::optional<Animation::Animation> animation_ = std::nullopt;
 public:
     using Sprite::Sprite;
     explicit Entity(Sprite&&);
     explicit Entity(const Sprite&);
 
     static auto FromJSON(const nlohmann::json &data, const TextureAtlas &textures) -> Entity;
-
     std::unique_ptr<Sprite> constructFromPrototype() const override;
 
     /// Updates the entity's state
     virtual void update(sf::Time delta);
+
+    // TODO Get rid of this. Move to constructor, it should be an invariant of entities that world is always valid.
+    void setWorld(World *world);
 
     /**
      * Replaces the current animation with animation.

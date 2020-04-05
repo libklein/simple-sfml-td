@@ -32,3 +32,7 @@ void Entity::update(sf::Time delta) {
         setTextureRect(texture_rect);
     }
 }
+
+void Entity::setWorld(World *world) {
+    this->world_ = world;
+}
