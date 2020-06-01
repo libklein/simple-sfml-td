@@ -77,9 +77,6 @@
         "sprite_id": 15
       }
     ],
-    "tower": [
-
-    ],
     "mob": [
       {
         "name": "soldier",
@@ -89,6 +86,27 @@
         "speed": 50,
         "turn_speed": 360
       }
+    ],
+    "tower": [
+      {
+        "name": "arrow tower",
+        "uuid": 13,
+        "sprite_id": 245,
+        "health": 100,
+        "speed": 50,
+        "turn_speed": 360,
+        "attacks": [
+          0
+        ]
+      }
     ]
-  }
+  },
+  "attacks": [
+    {
+      "name": "arrow",
+      "cooldown": 1,
+      "damage": 25,
+      "range": 300
+    }
+  ]
 }
