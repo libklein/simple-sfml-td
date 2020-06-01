@@ -59,6 +59,8 @@ public:
     void setHealth(float health);
     void damage(float damage); /// Modify damage
 
+    [[nodiscard]] auto isAlive() const -> bool override;
+
     void setAction(std::shared_ptr<Action> action);
 
     void setVelocity(Velocity v);

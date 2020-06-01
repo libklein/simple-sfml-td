@@ -28,6 +28,8 @@ public:
     /// Updates the entity's state
     virtual void update(sf::Time delta);
 
+    [[nodiscard]] virtual auto isAlive() const -> bool { return true; };
+
     // TODO Get rid of this. Move to constructor, it should be an invariant of entities that world is always valid.
     void setWorld(World *world);
 
@@ -47,6 +49,10 @@ public:
      * Stops and releases the current animation.
      */
     void clearAnimation();
+
+protected:
+    [[nodiscard]] auto getWorld() -> World*;
+    [[nodiscard]] auto getWorld() const -> World *;
 };
 
 

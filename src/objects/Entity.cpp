@@ -36,3 +36,11 @@ void Entity::update(sf::Time delta) {
 void Entity::setWorld(World *world) {
     this->world_ = world;
 }
+
+auto Entity::getWorld() -> World * {
+    return world_;
+}
+
+auto Entity::getWorld() const -> World * {
+    return world_;
+}

@@ -90,6 +90,21 @@ void Unit::moveTo(Location position) {
     target_ = position;
 }
 
+void Unit::setHealth(float health) {
+    assert(health < max_health_ && health >= 0.0f);
+    this->health_ = health;
+}
+
+void Unit::damage(float damage) {
+    assert(damage >= 0.0f);
+    this->health_ -= damage;
+    std::cout << "Received damage: " << damage << " new health: " << this->health_ << std::endl;
+}
+
+auto Unit::isAlive() const -> bool {
+    return this->health_ > 0;
+}
+
 auto Velocity::operator*(sf::Time seconds) const -> Velocity {
     return Velocity(this->x * seconds.asSeconds(), this->y * seconds.asSeconds(), this->z * seconds.asSeconds());
 }
