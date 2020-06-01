@@ -47,9 +47,13 @@ public:
     [[nodiscard]] auto getWaveCount() const -> size_t;
     [[nodiscard]] auto isGameOver() const -> bool;
     [[nodiscard]] auto getWorld() const -> const World&;
+
+    [[nodiscard]] auto getWorld() -> World&;
 protected:
     void spawn_next_wave();
     [[nodiscard]] auto nextWave() const -> const WavePrototype&;
+
+    void endGame();
 };
 
 

@@ -54,6 +54,14 @@ static auto get_angle(const Location &l) -> float {
     return get_angle(l.getPosition().x, l.getPosition().y);
 }
 
+static auto get_distance(const Location &origin, const Location &target) -> float {
+    return get_distance(origin.getPosition(), target.getPosition());
+}
+
+static auto get_angle_between(const Location &origin, const Location &target) -> float {
+    return get_angle_between(origin.getPosition(), target.getPosition());
+}
+
 class Sprite : public sf::Drawable {
 private:
     Location location_;
@@ -99,6 +107,14 @@ protected:
     void _recompute_transformation() const;
     auto _get_transform() const -> const sf::Transform&;
 };
+
+static auto get_distance(const Sprite &origin, const Sprite &target) -> float {
+    return get_distance(origin.getPosition(), target.getPosition());
+}
+
+static auto get_angle_between(const Sprite &origin, const Sprite &target) -> float {
+    return get_angle_between(origin.getPosition(), target.getPosition());
+}
 
 
 #endif //ROUGELIKE_DEV_SPRITE_HPP

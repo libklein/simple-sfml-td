@@ -4,6 +4,7 @@
 
 #include "Wave.hpp"
 #include <world/World.hpp>
+#include <util/utility.hpp>
 
 void Wave::update(sf::Time delta) {
     time_since_last_group_ += delta;
@@ -31,23 +32,20 @@ void Wave::update(sf::Time delta) {
             spawned_enemies++;
         }
         time_since_last_group_ = sf::Time::Zero;
-        /*while (!spawnedAllMobs()) {
-            auto spawn_point = _find_spawn_point_with_no_collision(prototype_.mobs.back());
-            if (!spawn_point) break;
-            auto &mob = world_->spawn<Mob>(prototype_.mobs.back(), spawn_point->x, spawn_point->y);
-
-            // Give movement command - choose closest location
-            auto &shortest_path = *std::min_element(paths_.begin(), paths_.end(),
-                                                    [&spawn_point](auto &path, auto &alt_path) {
-                                                        return get_absolute(path->getTarget() - *spawn_point) <
-                                                               get_absolute(alt_path->getTarget() - *spawn_point);
-                                                    });
-
-            mob.setAction(shortest_path);
-
-            mobs_.push_back(&mob);
-            prototype_.mobs.pop_back();
-        }*/
+    }
+    // Check which entities
+    for(auto next_mob = mobs_.begin(); next_mob != mobs_.end();) {
+        if(!(*next_mob)->isAlive()) {
+            util::unordered_remove(mobs_, next_mob);
+            continue;
+        }
+        if(_is_mob_at_target(**next_mob)) {
+            // TODO Notify game
+            world_->removeFromWorld(*next_mob);
+            util::unordered_remove(mobs_, next_mob);
+            continue;
+        }
+        ++next_mob;
     }
 }
 
@@ -85,4 +83,10 @@ auto Wave::spawnedAllMobs() const -> bool {
 
 auto Wave::finished() const -> bool {
     return spawnedAllMobs() && mobs_.empty();
+}
+
+auto Wave::_is_mob_at_target(const Mob &mob) const -> bool {
+    return std::find_if(world_->getMap().getTargets().begin(), world_->getMap().getTargets().end(), [&mob](const auto &tile) {
+        return get_distance(mob, *tile) < 5;
+    }) != world_->getMap().getTargets().end();
 }

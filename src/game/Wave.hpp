@@ -48,6 +48,8 @@ public:
 protected:
     [[nodiscard]] auto _find_spawn_point_with_no_collision(SpriteFactory::SpriteID next_mob) const
         -> std::optional<sf::Vector2f>;
+
+    [[nodiscard]] auto _is_mob_at_target(const Mob &mob) const -> bool;
 };
 
 

@@ -2,6 +2,7 @@
 // Created by patrick on 3/21/20.
 //
 
+#include <iostream>
 #include "Game.hpp"
 
 void Game::start() {
@@ -9,13 +10,14 @@ void Game::start() {
 }
 
 void Game::update(sf::Time delta) {
+    bool finished_game_earlier = isGameOver();
     world_.update(delta);
 
     // Move finished waves into finished_waves_
     for(auto next_active_wave = active_waves_.begin(); next_active_wave != active_waves_.end();) {
         if(next_active_wave->finished()) {
             finished_waves_.push_back(std::move(*next_active_wave));
-            next_active_wave = finished_waves_.erase(next_active_wave);
+            next_active_wave = active_waves_.erase(next_active_wave);
         } else {
             ++next_active_wave;
         }
@@ -25,10 +27,17 @@ void Game::update(sf::Time delta) {
         wave.update(delta);
     }
 
+    if(isGameOver()) {
+        if(!finished_game_earlier) {
+            this->endGame();
+        }
+        return;
+    }
+
     // Should we spawn the next wave?
     if(getTimeToNextWave() <= sf::Time::Zero) {
         spawn_next_wave();
-        assert(getTimeToNextWave() >= sf::Time::Zero);
+        assert(getTimeToNextWave() >= sf::Time::Zero - sf::seconds(1));
     }
 }
 
@@ -76,5 +85,13 @@ Game::Game(const SpriteFactory &sprites, World &&world, std::vector<WavePrototyp
 }
 
 auto Game::getWorld() const -> const World & {
+    return world_;
+}
+
+void Game::endGame() {
+    std::cout << "Game has been won!" << std::endl;
+}
+
+auto Game::getWorld() -> World & {
     return world_;
 }
