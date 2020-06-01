@@ -28,6 +28,14 @@ static auto get_angle(const sf::Vector2f &vec) -> float {
     return get_angle(vec.x, vec.y);
 }
 
+static auto get_distance(const sf::Vector2f &origin, const sf::Vector2f &target) -> float {
+    return get_absolute(target - origin);
+}
+
+static auto get_angle_between(const sf::Vector2f &origin, const sf::Vector2f &target) -> float {
+    return get_angle(target - origin);
+}
+
 template<class T>
 static auto sgn(T t) -> T {
     static_assert(std::is_arithmetic_v<T>);

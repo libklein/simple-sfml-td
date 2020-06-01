@@ -8,6 +8,7 @@
 #include <objects/Tile.hpp>
 #include <objects/Entity.hpp>
 #include <objects/Mob.hpp>
+#include <objects/Tower.hpp>
 
 auto SpriteFactory::LoadFromFile(const std::filesystem::path &path) -> SpriteFactory {
     auto textures = TextureAtlas::LoadFromFile(path / "tdtiles_64.png");
@@ -25,6 +26,13 @@ auto SpriteFactory::LoadFromFile(const std::filesystem::path &path) -> SpriteFac
             sprite_atlas.add<Tile>(SpriteFactory::TerrainSprite, Tile::FromJSON(tile, sprite_atlas.Textures()));
         }
     }
+
+    // Read attacks
+    std::vector<Attack> attacks;
+    std::transform(atlas["attacks"].begin(), atlas["attacks"].end(), std::back_inserter(attacks), [](const auto &data){
+        return Attack::FromJSON(data);
+    });
+
     // Read entities
     for(const auto &static_sprite : atlas["entities"]["static"]) {
         sprite_atlas.add<Entity>(SpriteFactory::StaticSprite, Entity::FromJSON(static_sprite, sprite_atlas.Textures()));
@@ -33,6 +41,11 @@ auto SpriteFactory::LoadFromFile(const std::filesystem::path &path) -> SpriteFac
     // Read entities
     for(const auto &static_sprite : atlas["entities"]["mob"]) {
         sprite_atlas.add<Mob>(SpriteFactory::EntitySprite, Mob::FromJSON(static_sprite, sprite_atlas.Textures()));
+    }
+
+    // Read entities
+    for(const auto &static_sprite : atlas["entities"]["tower"]) {
+        sprite_atlas.add<Tower>(SpriteFactory::EntitySprite, Tower::FromJSON(static_sprite, sprite_atlas.Textures(), attacks));
     }
 
     return sprite_atlas;

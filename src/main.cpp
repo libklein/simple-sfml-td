@@ -15,15 +15,18 @@ int main() {
     window.setVerticalSyncEnabled(true);
 
 
-    auto [map, sprite_factory] = Map::LoadFromFile("./resource/Maps/test.json");
-    auto world = World(std::move(map), sprite_factory);
+    auto [game, sprite_factory] = [](){
+        auto [map, _sprite_factory] = Map::LoadFromFile("./resource/Maps/test.json");
+        std::unique_ptr<SpriteFactory> sprite_factory = std::make_unique<SpriteFactory>(std::move(_sprite_factory));
+        auto world = World(std::move(map), *sprite_factory);
 
-    std::vector<WavePrototype> waves = {{{12, 12},
-                                         sf::seconds(2),
-                                         sf::seconds(60),
-                                         sf::seconds(2),
-                                         2}};
-    Game game(sprite_factory, std::move(world), std::move(waves), 50);
+        std::vector<WavePrototype> waves = {{{12, 12},
+                                                    sf::seconds(2),
+                                                    sf::seconds(60),
+                                                    sf::seconds(2),
+                                                    2}};
+        return std::make_tuple(Game(*sprite_factory, std::move(world), std::move(waves), 50), std::move(sprite_factory));
+    }();
 
     sf::Clock clock;
     while(window.isOpen()) {
@@ -51,18 +54,18 @@ int main() {
                     }*/
                 }
                 case sf::Event::MouseButtonReleased: {
-                    /*if(evt.mouseButton.button == sf::Mouse::Left) {
+                    if(evt.mouseButton.button == sf::Mouse::Left) {
+                        auto &world = game.getWorld();
                         auto &clicked_tile = world.getMap().getTile(evt.mouseButton.x, evt.mouseButton.y);
                         std::cout << clicked_tile.SpriteID() << std::endl;
                         if(clicked_tile.isBuildable()) {
                             if (clicked_tile.canBuild()) {
-                                world.getMap().addEntity(std::move(*sprite_factory.CreateEntity<Entity>(11)),
-                                              evt.mouseButton.x, evt.mouseButton.y);
+                                world.spawn<Tower>(13, evt.mouseButton.x, evt.mouseButton.y);
                             } else if (clicked_tile.hasEntity()) {
-                                world.getMap().removeEntity(evt.mouseButton.x, evt.mouseButton.y);
+                                world.removeFromWorld(clicked_tile.getEntity());
                             }
                         }
-                    }*/
+                    }
                 }
             }
         }
