@@ -9,6 +9,7 @@
 #include <objects/Entity.hpp>
 #include <objects/actions/Action.hpp>
 #include <ostream>
+#include <optional>
 
 struct Velocity : public sf::Vector3f {
     /// x and y indicate the velocity in x and y direction (in units per second)
